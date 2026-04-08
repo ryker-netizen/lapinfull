@@ -329,16 +329,10 @@ document.body.addEventListener('click', () => {
     }
 });
 
-document.body.addEventListener('click', () => {
-    if (!started) {
-        audio.volume = 0.25;
-        audio.play();
-        started = true;
-    }
-});
-
 document.getElementById('mute-btn').onclick = () => {
-    audio.muted = !audio.muted;
+    const hash = window.location.hash.replace('#','') || 'vzaidkost';
+    const audio = document.getElementById('audio-' + (hash === 'murmure-de-vide' ? 'murmure' : hash));
+    if(audio) audio.muted = !audio.muted;
 };
 
         let visits = localStorage.getItem('lapin_visits') || 0;
