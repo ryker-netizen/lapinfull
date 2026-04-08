@@ -231,42 +231,18 @@
             }
         };
 
-        function initBoot() {
-            const log = document.getElementById('boot-log');
-            const lines = ["> INITIALIZING...", "> MOUNTING /ROOT/LAPIN...", "> ACCESSING ARCHIVES...", "> SYSTEM_READY."];
-            let i = 0;
-            const interval = setInterval(() => {
-                if (i < lines.length) {
-                    log.innerHTML += `<div>${lines[i]}</div>`;
-                    i++;
-                } else {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        document.getElementById('boot-screen').style.opacity = '0';
-                        setTimeout(() => {
-                            document.getElementById('boot-screen').remove();
-                            renderView();
-                        }, 1000);
-                    }, 800);
-                }
-            }, 300);
- // ==== НЕ ЗАВИСЯЩЕЕ ОТ DOM ====
+        // ==== НЕ ЗАВИСЯЩЕЕ ОТ DOM ====
     let visits = localStorage.getItem('lapin_visits') || 0;
     visits++;
     localStorage.setItem('lapin_visits', visits);
 
-    if (visits > 2) {
-        setTimeout(() => console.log("ты снова здесь"), 2000);
-    }
+    if (visits > 2) setTimeout(() => console.log("ты снова здесь"), 2000);
 
     const hour = new Date().getHours();
-    if (hour >= 2 && hour <= 5) {
-        setTimeout(() => console.log("ночью архив другой"), 3000);
-    }
+    if (hour >= 2 && hour <= 5) setTimeout(() => console.log("ночью архив другой"), 3000);
 
     // ==== ВСЁ, ЧТО ВЗАИМОДЕЙСТВУЕТ С DOM ====
     window.onload = () => {
-        // ===== Переменные состояния =====
         let started = false;
         let hiddenClicks = 0;
 
@@ -313,10 +289,7 @@
 
         // ===== Аудио =====
         function playAudioForRoot(root) {
-            document.querySelectorAll('audio').forEach(a => {
-                a.pause();
-                a.currentTime = 0;
-            });
+            document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
 
             switch(root) {
                 case 'vzaidkost':
@@ -325,7 +298,6 @@
                 case 'murmure-de-vide':
                     document.getElementById('audio-murmure').play();
                     break;
-                // добавишь сюда остальные
             }
         }
 
@@ -357,17 +329,11 @@
             el.className = 'whisper';
 
             const phrases = [
-                "ты здесь", 
-                "не смотри", 
-                "он рядом",
-                "в архиве тишина", 
-                "эхо без голоса", 
-                "след несказанных слов"
+                "ты здесь", "не смотри", "он рядом",
+                "в архиве тишина", "эхо без голоса", "след несказанных слов"
             ];
 
-            let text = phrases[Math.floor(Math.random() * phrases.length)];
-            el.innerText = text;
-
+            el.innerText = phrases[Math.floor(Math.random() * phrases.length)];
             el.style.left = Math.random() * 100 + "%";
             el.style.top = Math.random() * 100 + "%";
 
@@ -377,10 +343,7 @@
                 el.innerText = phrases[Math.floor(Math.random() * phrases.length)];
             }, 200);
 
-            setTimeout(() => {
-                clearInterval(flickerInterval);
-                el.remove();
-            }, 6000);
+            setTimeout(() => { clearInterval(flickerInterval); el.remove(); }, 6000);
         }
 
         // ===== Часы =====
@@ -394,7 +357,6 @@
                 hiddenClicks++;
                 if (hiddenClicks >= 5) window.location.hash = "mirror";
             }
-
             if (!started) {
                 started = true;
                 const hash = window.location.hash.replace('#', '') || 'vzaidkost';
