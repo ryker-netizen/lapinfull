@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>VOID_ARCHIVE // LAPIN</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+   <script src="https://cdn.tailwindcss.com" defer></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700&display=swap');
 
@@ -285,7 +285,7 @@ function runDecrypt() {
 function playAudioForRoot(root) {
     document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
     let audioId = 'audio-' + root;
-if (root === 'mirror') audioId = 'audio-mirror_1788';
+if (root === 'mirror') audioId = 'audio-mirror';
 
 const audio = document.getElementById(audioId);
 if (audio) audio.play().catch(e => console.log("Audio error:", e));
@@ -326,6 +326,7 @@ function spawnWhisper() {
         el.innerText = phrases[Math.floor(Math.random() * phrases.length)];
     }, 200);
     setTimeout(() => { clearInterval(flickerInterval); el.remove(); }, 6000);
+    z-index: 10000 !important;
 }
 
 // ===== Часы =====
@@ -334,7 +335,7 @@ function updateClock() {
 }
 
 // ===== Обработчики кликов =====
-window.onload = () => {
+document.addEventListener('DOMContentLoaded', () => {
     // Boot
     initBoot();
 
