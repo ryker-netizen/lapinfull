@@ -228,7 +228,7 @@
                         <a href="https://t.me/m/nif1_K6IZTli" target="_blank" class="btn-branch">C. VARIABLE</a>
                     </div>`
             },
-            'mirror': {
+            'mirror_1788': {
                 title: 'MIRROR_DECRYPTOR_#1788',
                 content: `
                     <div class="bg-red-900/10 border border-red-900/30 p-4 mb-6 text-[10px] uppercase text-red-500">Warning: Memory fragmentation detected.</div>
@@ -326,7 +326,6 @@ function spawnWhisper() {
         el.innerText = phrases[Math.floor(Math.random() * phrases.length)];
     }, 200);
     setTimeout(() => { clearInterval(flickerInterval); el.remove(); }, 6000);
-    z-index: 10000 !important;
 }
 
 // ===== Часы =====
@@ -338,6 +337,7 @@ function updateClock() {
 document.addEventListener('DOMContentLoaded', () => {
     // Boot
     initBoot();
+    });
 
     // Декодер
     document.body.addEventListener('click', (e) => {
@@ -389,11 +389,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
 <!-- Аудио источники -->
 <audio id="audio-vzaidkost" src="https://mn1.sunproxy.net/file/NFV5UEQ0dVp3OWhralBlL1JDanR6V3oveWFmR1JKM2gzQnVyNkVaMldtNTE0cE80VGwyM2xYb0pZL2RRaGJGRHhKRmVRWmxBdzdNTGZkbFpnM1ZDc2xETmJxRElzU0NSTVd3N3h6M04rbkU9/Dead_Melodies_-_Winter_s_Bite_(mp3.mn).mp3.mp3" preload="none"></audio>
-<audio id="audio-murmure" src="https://mn1.sunproxy.net/file/NFV5UEQ0dVp3OWhralBlL1JDanR6V3oveWFmR1JKM2gzQnVyNkVaMldtNTE0cE80VGwyM2xYb0pZL2RRaGJGRFdGZktJU2NPMmZWVGJqVCtwNUxzaVo3NUtxZ3BSUkN2UFlXVWJGL1hnWmM9/Biosphere_and_Deathprod_-_Trasparenza_(mp3.mn).mp3" preload="none"></audio>
+<audio id="audio-murmure-de-vide" src="https://mn1.sunproxy.net/file/NFV5UEQ0dVp3OWhralBlL1JDanR6V3oveWFmR1JKM2gzQnVyNkVaMldtNTE0cE80VGwyM2xYb0pZL2RRaGJGRFdGZktJU2NPMmZWVGJqVCtwNUxzaVo3NUtxZ3BSUkN2UFlXVWJGL1hnWmM9/Biosphere_and_Deathprod_-_Trasparenza_(mp3.mn).mp3" preload="none"></audio>
 <audio id="audio-ili" src="https://mn1.sunproxy.net/file/NFV5UEQ0dVp3OWhralBlL1JDanR6V3oveWFmR1JKM2gzQnVyNkVaMldtNTE0cE80VGwyM2xYb0pZL2RRaGJGRHVzLzJlc3BpSVY5TFdpM29UR0lyV2N6eXA3Q2tSRDg3VXJxdGZaVkF0cTg9/Anna_von_Hausswolff_-_Sacro_Bosco_(mp3.mn).mp3.mp3" preload="none"></audio>
 <audio id="audio-foryouhaaa" src="https://mn1.sunproxy.net/file/NFV5UEQ0dVp3OWhralBlL1JDanR6V3oveWFmR1JKM2gzQnVyNkVaMldtNTE0cE80VGwyM2xYb0pZL2RRaGJGRFRiTHRHWmpJWnpWZGpzOGo5ZGE5Z2ZsSkx6N2M1WlNhSTlVVEZ1aEVkMzQ9/-_THE_PARADISE_VIEW_(mp3.mn).mp3.mp3" preload="none"></audio>
 <audio id="audio-limite" src="https://mn1.sunproxy.net/file/NFV5UEQ0dVp3OWhralBlL1JDanR6V3oveWFmR1JKM2gzQnVyNkVaMldtNTE0cE80VGwyM2xYb0pZL2RRaGJGRGRSZlJhcmgxL1pBMzZnK0VTUmRkYWd0eWozS3FvTHNXYVVMRS8wQUVKOU09/Massive_Attack_-_Angel_Blur_Remix_(mp3.mn).mp3.mp3" preload="none"></audio>
-<audio id="audio-mirror" src="https://mn1.sunproxy.net/file/NFV5UEQ0dVp3OWhralBlL1JDanR6V3oveWFmR1JKM2gzQnVyNkVaMldtNTE0cE80VGwyM2xYb0pZL2RRaGJGRHN3SHkzdnp3bEF2WG1Ua2x6MHRUQ3Z0RVVOcmpzMUQrL2Jza3RhUXZMeDQ9/Surprise_Chef_-_Crayfish_Caper_(mp3.mn).mp3" preload="none"></audio>
+<audio id="audio-mirror_1788" src="https://mn1.sunproxy.net/file/NFV5UEQ0dVp3OWhralBlL1JDanR6V3oveWFmR1JKM2gzQnVyNkVaMldtNTE0cE80VGwyM2xYb0pZL2RRaGJGRHN3SHkzdnp3bEF2WG1Ua2x6MHRUQ3Z0RVVOcmpzMUQrL2Jza3RhUXZMeDQ9/Surprise_Chef_-_Crayfish_Caper_(mp3.mn).mp3" preload="none"></audio>
     
 <div id="mute-btn" style="
 position:fixed;top:10px;right:10px;
