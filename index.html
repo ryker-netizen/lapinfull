@@ -273,20 +273,23 @@
             }, 300);
         }
 
-        // ===== Декодирование =====
-        function runDecrypt() {
-            const res = document.getElementById('dec-res');
-            const btn = document.getElementById('dec-btn');
-            btn.innerHTML = "DECODING...";
-            setTimeout(() => {
-                const text = "THIS IS NOT A DREAM. SOMEONE IS WATCHING YOU, LAPIN.";
-                res.innerHTML = text;
-                res.setAttribute('data-text', text);
-                res.classList.remove('hidden');
-                btn.style.display = 'none';
-            }, 2000);
-        }
+        // ВНЕ window.onload
+function runDecrypt() {
+    const res = document.getElementById('dec-res');
+    const btn = document.getElementById('dec-btn');
+    btn.innerHTML = "DECODING...";
+    setTimeout(() => {
+        const text = "THIS IS NOT A DREAM. SOMEONE IS WATCHING YOU, LAPIN.";
+        res.innerHTML = text;
+        res.setAttribute('data-text', text);
+        res.classList.remove('hidden');
+        btn.style.display = 'none';
+    }, 2000);
+}
 
+window.onload = () => {
+    // весь остальной JS остаётся внутри window.onload
+};
         // ===== Аудио =====
         function playAudioForRoot(root) {
             document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
