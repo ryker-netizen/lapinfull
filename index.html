@@ -262,7 +262,7 @@
                 res.classList.remove('hidden');
                 btn.style.display = 'none';
             }, 2000);
-       
+       }
         let visits = localStorage.getItem('lapin_visits') || 0;
 visits++;
 localStorage.setItem('lapin_visits', visits);
@@ -274,12 +274,23 @@ if (visits > 2) {
 }
         let hiddenClicks = 0;
 
+let started = false;
+let hiddenClicks = 0;
+
 document.body.addEventListener('click', (e) => {
+    // пасхалка
     if (e.target === document.body) {
         hiddenClicks++;
         if (hiddenClicks >= 5) {
             window.location.hash = "mirror";
         }
+    }
+
+    // первый запуск аудио
+    if (!started) {
+        started = true;
+        const hash = window.location.hash.replace('#', '') || 'vzaidkost';
+        playAudioForRoot(hash);
     }
 });
 function spawnWhisper() {
@@ -377,17 +388,6 @@ if (hour >= 2 && hour <= 5) {
     function updateClock() {
         document.getElementById('clock').innerText = new Date().toTimeString().split(' ')[0];
     }
-
-    window.addEventListener('hashchange', renderView);
-
-    let started = false;
-
-    document.body.addEventListener('click', () => {
-        if (!started) {
-            started = true;
-            const hash = window.location.hash.replace('#', '') || 'vzaidkost';
-            playAudioForRoot(hash);
-        }
     });
 
     document.getElementById('mute-btn').onclick = () => {
