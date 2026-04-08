@@ -252,6 +252,24 @@
             }, 300);
         }
 
+        function playAudioForRoot(root) {
+    // Сначала заглушаем все
+    document.querySelectorAll('audio').forEach(a => a.pause());
+
+    switch(root) {
+        case 'vzaidkost':
+            document.getElementById('audio-vzaidkost').play();
+            break;
+        case 'murmure-de-vide':
+            document.getElementById('audio-murmure').play();
+            break;
+        // и так далее для каждой директории
+    }
+}
+
+// В renderView()
+playAudioForRoot(hash);
+
         function renderView() {
             const hash = window.location.hash.replace('#', '') || 'vzaidkost';
             const container = document.getElementById('view-container');
@@ -379,9 +397,8 @@ if (hour >= 2 && hour <= 5) {
 }
         
     </script>
-    <audio id="bg-audio" loop>
-  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8b4f2d6c2.mp3">
-</audio>
+    <audio id="audio-vzaidkost" src="https://rus.hitmotop.com/song/72051472#" preload="none"></audio>
+<audio id="audio-murmure" src="URL_ДРУГОЙ_ПЕСНИ" preload="none"></audio>
 
 <div id="mute-btn" style="
 position:fixed;top:10px;right:10px;
