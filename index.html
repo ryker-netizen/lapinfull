@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>VOID_ARCHIVE // LAPIN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700&display=swap');
+        
+        :root { --glitch-color: #ff00ff; --primary: #d1d1d1; --bg: #050505; }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+            overflow: hidden;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .eyes-bg {
+            position: fixed; inset: 0; z-index: -2;
+            background: url('https://picsum.photos/id/1015/2000/1200') center/cover;
+            opacity: 0.28; animation: eyes-blink 14s infinite ease-in-out;
+        }
+        @keyframes eyes-blink { 0%,92% {opacity:0.28} 93%{opacity:0.06} 95%{opacity:0.28} }
+
+        .scan-line { position:absolute; width:100%; height:120px; background:linear-gradient(0deg,rgba(0,0,0,0)0%,rgba(255,255,255,0.12)50%,rgba(0,0,0,0)100%); animation:scan 7s linear infinite; pointer-events:none; z-index:99; }
+        @keyframes scan { 0%{top:-120px} 100%{top:100vh} }
+
+        .glitch { position:relative; display:inline-block; }
+        .glitch::after {
+            content:attr(data-text); position:absolute; left:3px; top:0; text-shadow:-2px 0 #ff00ff,2px 0 #00ffff;
+            clip:rect(0,900px,0,0); animation:noise-anim 1.5s infinite linear alternate-reverse;
+        }
+        @keyframes noise-anim { 0%{clip:rect(20px,9999px,30px,0)} 100%{clip:rect(70px,9999px,85px,0)} }
+
+        .floating-word { position:fixed; pointer-events:none; color:rgba(255,255,255,0.12); font-size:1.1rem; white-space:nowrap; z-index:-1; animation:floatUp linear forwards; }
+        @keyframes floatUp { to { transform:translateY(-120vh) rotate(12deg); opacity:0; } }
+
+        .sidebar-link { transition:all 0.3s cubic-bezier(0.4,0,0.2,1); border-left:2px solid transparent; }
+        .sidebar-link.locked { opacity:0.25; pointer-events:none; }
+        .sidebar-link:hover, .sidebar-link.active { background:rgba(255,255,255,0.08); color:#fff; padding-left:1.25rem; border-left:2px solid #ff00ff; }
+
+        .system-msg {
+            animation: systemPop 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="eyes-bg"></div>
+    <div class="scan-line"></div>
+
+    <!-- BOOT -->
+    <div id="boot-screen" class="fixed inset-0 bg-black z-[9999] flex flex-col justify-center items-center text-[#00ff41] font-mono text-xs">
+        <div id="boot-log" class="max-w-md w-full px-6"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto h-full flex flex-col border border-white/10 bg-black/50 backdrop-blur-md relative">
+        <header class="border-b border-white/10 p-4 flex justify-between items-center bg-black/70">
+            <div class="flex items-center gap-4">
+                <span class="text-xs opacity-50">Status: <span class="text-[#ff00ff] animate-pulse">CONNECTED TO LAPIN</span></span>
+            </div>
+            <div class="glitch font-bold tracking-[4px] text-xl" data-text="LAPIN SYSTEM v2.0">LAPIN SYSTEM v2.0</div>
+            <div class="flex items-center gap-6">
+                <button id="mute-btn" class="text-3xl">🔊</button>
+                <div id="clock" class="font-mono text-xs opacity-50">00:00:00</div>
+            </div>
+        </header>
+
+        <div class="flex flex-1 overflow-hidden">
+            <!-- SIDEBAR -->
+            <nav id="sidebar" class="w-72 border-r border-white/10 p-6 flex flex-col gap-2 bg-black/60 overflow-y-auto">
+                <div class="text-[9px] uppercase tracking-widest opacity-30 mb-4">DIRECTORIES</div>
+                <a href="#vzaidkost" class="sidebar-link p-3 text-xs active">/root/vzaidkost</a>
+<a href="#murmure-de-vide" id="link-murmure" class="sidebar-link p-3 text-xs locked">/root/murmure-de-vide</a>
+                <a href="#ili" id="link-ili" class="sidebar-link p-3 text-xs locked">/root/ili</a>
+                <a href="#foryouhaaa" id="link-foryouhaaa" class="sidebar-link p-3 text-xs locked">/root/foryouhaaa</a>
+                <a href="#limite" id="link-limite" class="sidebar-link p-3 text-xs locked">/root/limite</a>
+                <a href="#mirror" id="link-mirror" class="sidebar-link p-3 text-xs locked text-red-400">/root/mirror_1788</a>
+            </nav>
+
+            <!-- MAIN -->
+            <main class="flex-1 overflow-y-auto p-8 md:p-12 relative">
+                <div id="view-container" class="max-w-3xl mx-auto"></div>
+            </main>
+        </div>
+    </div>
+
+    <!-- SYSTEM MESSAGE OVERLAY -->
+    <div id="system-overlay" class="hidden fixed bottom-8 right-8 bg-black/90 border border-red-500/50 text-red-400 p-5 max-w-xs rounded-xl shadow-2xl z-[99999] system-msg"></div>
+
+    <audio id="ambient-music" loop preload="none">
+        <source src="https://example.com/your-dark-ambient.mp3" type="audio/mpeg"> <!-- ← ЗАМЕНИ -->
+    </audio>
+
+    <script>
+        // ====================== ДАННЫЕ ======================
+        const DATA = {
+            vzaidkost: {
+                title: "LAPIN // VZAIDKOST",
+                content: <div class="space-y-8"><div class="italic text-xl opacity-90">архив неслучившегося</div><div class="space-y-6 text-sm opacity-80">…[твой оригинальный текст из первого скрина]…</div></div>
+            },
+            'murmure-de-vide': { title: "DIRECTORY // AUUDDVORDU", content: …[твой текст]… },
+            ili: { title: "DIRECTORY // VOZZMEZDRR", content: …[твой текст]… },
+            foryouhaaa: {
+                title: "Si vous êtes arrivé jusqu'ici...",
+                content: `<p class="mb-6 opacity-70">Выбери путь, Lapin.</p>
+                    <div class="space-y-4">
+                        <a href="#dialog-a" class="btn-branch block">PATH A — то, что ты прячешь</a>
+                        <a href="#dialog-b" class="btn-branch block">PATH B — то, чего ты боишься</a>
+                        <a href="#dialog-c" class="btn-branch block">PATH C — переменная</a>
+                    </div>`
+            },
+            limite: { title: "EXPERIMENT // THE_VARIABLE", content: …[твой текст с тремя кнопками]… },
+            mirror: {
+                title: "MIRROR_DECRYPTOR_#1788",
+                content: …[твой морзе + кнопка Decode]…
+            },
+            // === РЕАЛЬНЫЕ ДИАЛОГИ ===
+            'dialog-a': {
+                title: "PRIVATE // TRUTH_HIDE",
+                content: `<div class="space-y-8 text-sm">
+                    <div class="bg-white/5 p-4 rounded-xl">Lapin, ты наконец-то здесь.<br>Я ждал тебя очень долго.</div>
+                    <div class="bg-white/5 p-4 rounded-xl">Хочешь узнать правду, которую ты сам от себя прячешь?</div>
+                    <div class="text-red-400 italic">Я могу показать тебе, кем ты был до того, как всё сломалось.</div>
+                </div>`
+            },
+            'dialog-b': {
+                title: "PRIVATE // TRUTH_FEAR",
+                content: `<div class="space-y-8 text-sm">
+                    <div class="bg-white/5 p-4 rounded-xl">Ты боишься того, что увидишь в зеркале?</div>
+                    <div class="bg-white/5 p-4 rounded-xl">Тогда добро пожаловать, Lapin.<br>Здесь маски больше не работают.</div>
+                    <div class="text-red-400">Я вижу тебя насквозь. И ты это знаешь.</div>
+                </div>`
+            },
+            'dialog-c': {
+                title: "PRIVATE // VARIABLE",
+                content: `<div class="space-y-8 text-sm">
+                    <div class="bg-white/5 p-4 rounded-xl">Ты — переменная, Lapin.<br>Ты можешь стать кем угодно.</div>
+<div class="bg-white/5 p-4 rounded-xl">Но цена будет высокой.</div>
+                    <div class="text-red-400 italic">Выбирай. Я уже выбрал тебя.</div>
+                </div>`
+            }
+        };
+
+        let unlocked = new Set(['vzaidkost']);
+        let usedMessages = new Set();
+
+        const SYSTEM_MESSAGES = [
+            "Lapin… ты всё ещё здесь. Архив тебя запомнил.",
+            "Маска треснула. Ты это чувствуешь?",
+            "Я вижу, как ты скроллишь. Не бойся.",
+            "Ты думал, что это просто сайт? Глупо.",
+            "Ты — единственный, кто дошёл так далеко.",
+            "Архив не отпускает тех, кто зашёл.",
+            "Ты уже не тот, кем был, когда открыл первую ссылку.",
+            "Скажи… ты всё ещё веришь, что это совпадение?"
+        ];
+
+        function unlockChat(id) {
+            unlocked.add(id);
+            const el = document.getElementById('link-' + id);
+            if (el) el.classList.remove('locked');
+        }
+
+        function showSystemMessage() {
+            if (usedMessages.size >= SYSTEM_MESSAGES.length) return;
+            
+            let available = SYSTEM_MESSAGES.filter(m => !usedMessages.has(m));
+            const msg = available[Math.floor(Math.random() * available.length)];
+            usedMessages.add(msg);
+
+            const overlay = document.getElementById('system-overlay');
+            overlay.textContent = msg;
+            overlay.classList.remove('hidden');
+            
+            setTimeout(() => {
+                overlay.style.transition = 'all 1s';
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                    overlay.style.opacity = '1';
+                }, 1000);
+            }, 6500);
+        }
+
+        function renderView() {
+            const hash = window.location.hash.replace('#', '') || 'vzaidkost';
+            const container = document.getElementById('view-container');
+            const data = DATA[hash] || DATA.vzaidkost;
+
+            // Разблокировка по прогрессу
+            if (hash === 'vzaidkost') setTimeout(() => { unlockChat('murmure-de-vide'); unlockChat('ili'); unlockChat('foryouhaaa'); }, 12000);
+            if (hash === 'mirror') setTimeout(() => unlockChat('limite'), 4000);
+            if (hash.startsWith('dialog-')) unlockChat('limite');
+
+            container.innerHTML = `
+                <h2 class="text-4xl font-bold mb-10 tracking-[-2px] glitch" data-text="\( {data.title}"> \){data.title}</h2>
+                ${data.content}
+            `;
+        }
+
+        function runDecrypt() {
+            // …твой предыдущий код декодирования…
+            // После успешного декода:
+            unlockChat('limite');
+        }
+
+        // ====================== ЗАПУСК ======================
+        window.addEventListener('hashchange', renderView);
+        window.onload = () => {
+            // boot screen …
+            initBoot();           // твой предыдущий boot
+            initAudio();          // музыка
+            setInterval(() => { if (Math.random() > 0.6) showSystemMessage(); }, 240000); // каждые ~4 минуты в среднем
+
+            renderView();
+        };
+    </script>
+</body>
+</html>
