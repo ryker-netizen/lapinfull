@@ -247,7 +247,12 @@ let hiddenClicks = 0;
 function initBoot() {
     const bootLog = document.getElementById('boot-log');
     if (!bootLog) return;
-    bootLog.innerHTML = ""> INITIALIZING...", "> MOUNTING /ROOT/LAPIN...", "> ACCESSING ARCHIVES...", "> SYSTEM_READY."";
+    bootLog.innerHTML = `
+<div>> INITIALIZING...</div>
+<div>> MOUNTING /ROOT/LAPIN...</div>
+<div>> ACCESSING ARCHIVES...</div>
+<div>> SYSTEM_READY.</div>
+`;
     setTimeout(() => {
         document.getElementById('boot-screen').style.display = 'none';
     }, 1500);
@@ -270,8 +275,11 @@ function runDecrypt() {
 // ===== Воспроизведение аудио =====
 function playAudioForRoot(root) {
     document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
-    const audio = document.getElementById('audio-' + root);
-    if (audio) audio.play().catch(e => console.log("Audio error:", e));
+    let audioId = 'audio-' + root;
+if (root === 'mirror') audioId = 'audio-mirror_1788';
+
+const audio = document.getElementById(audioId);
+if (audio) audio.play().catch(e => console.log("Audio error:", e));
 }
 
 // ===== Рендер вью =====
@@ -322,7 +330,11 @@ window.onload = () => {
     initBoot();
 
     // Декодер
-    document.getElementById('dec-btn')?.addEventListener('click', () => runDecrypt());
+    document.body.addEventListener('click', (e) => {
+    if (e.target && e.target.id === 'dec-btn') {
+        runDecrypt();
+    }
+});
 
     // Sidebar
     document.querySelectorAll('.sidebar-link').forEach(link => {
@@ -371,7 +383,7 @@ window.onload = () => {
 <audio id="audio-ili" src="https://mn1.sunproxy.net/file/NFV5UEQ0dVp3OWhralBlL1JDanR6V3oveWFmR1JKM2gzQnVyNkVaMldtNTE0cE80VGwyM2xYb0pZL2RRaGJGRHVzLzJlc3BpSVY5TFdpM29UR0lyV2N6eXA3Q2tSRDg3VXJxdGZaVkF0cTg9/Anna_von_Hausswolff_-_Sacro_Bosco_(mp3.mn).mp3.mp3" preload="auto"></audio>
 <audio id="audio-foryouhaaa" src="https://mn1.sunproxy.net/file/NFV5UEQ0dVp3OWhralBlL1JDanR6V3oveWFmR1JKM2gzQnVyNkVaMldtNTE0cE80VGwyM2xYb0pZL2RRaGJGRFRiTHRHWmpJWnpWZGpzOGo5ZGE5Z2ZsSkx6N2M1WlNhSTlVVEZ1aEVkMzQ9/-_THE_PARADISE_VIEW_(mp3.mn).mp3.mp3" preload="auto"></audio>
 <audio id="audio-limite" src="https://mn1.sunproxy.net/file/NFV5UEQ0dVp3OWhralBlL1JDanR6V3oveWFmR1JKM2gzQnVyNkVaMldtNTE0cE80VGwyM2xYb0pZL2RRaGJGRGRSZlJhcmgxL1pBMzZnK0VTUmRkYWd0eWozS3FvTHNXYVVMRS8wQUVKOU09/Massive_Attack_-_Angel_Blur_Remix_(mp3.mn).mp3.mp3" preload="auto"></audio>
-<audio id="audio-mirror_1788" src="https://mn1.sunproxy.net/file/NFV5UEQ0dVp3OWhralBlL1JDanR6V3oveWFmR1JKM2gzQnVyNkVaMldtNTE0cE80VGwyM2xYb0pZL2RRaGJGRHN3SHkzdnp3bEF2WG1Ua2x6MHRUQ3Z0RVVOcmpzMUQrL2Jza3RhUXZMeDQ9/Surprise_Chef_-_Crayfish_Caper_(mp3.mn).mp3" preload="auto"></audio>
+<audio id="audio-mirror" src="https://mn1.sunproxy.net/file/NFV5UEQ0dVp3OWhralBlL1JDanR6V3oveWFmR1JKM2gzQnVyNkVaMldtNTE0cE80VGwyM2xYb0pZL2RRaGJGRHN3SHkzdnp3bEF2WG1Ua2x6MHRUQ3Z0RVVOcmpzMUQrL2Jza3RhUXZMeDQ9/Surprise_Chef_-_Crayfish_Caper_(mp3.mn).mp3" preload="auto"></audio>
     
 <div id="mute-btn" style="
 position:fixed;top:10px;right:10px;
