@@ -1,76 +1,110 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>VOID_ARCHIVE // LAPIN</title>
-<script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <title>VOID_ARCHIVE // LAPIN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700&display=swap');
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700&display=swap');
+        :root {
+            --glitch-color: #ff0000;
+            --primary: #d1d1d1;
+            --bg: #050505;
+        }
 
-:root {
-    --glitch-color: #ff0000;
-    --primary: #d1d1d1;
-    --bg: #050505;
-}
+        body {
+            background-color: var(--bg);
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+            overflow: hidden;
+            height: 100vh;
+            margin: 0;
+        }
 
-body {
-    background-color: var(--bg);
-    color: var(--primary);
-    font-family: 'JetBrains Mono', monospace;
-    overflow: hidden;
-    height: 100vh;
-    margin: 0;
-}
+        #boot-screen {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #00ff00;
+            padding: 20px;
+        }
 
-/* --- ТВОЙ ДИЗАЙН НЕ ТРОГАЮ --- */
+        .viewport-background {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png'), 
+                        radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
+            opacity: 0.4;
+            z-index: -1;
+        }
 
-#boot-screen {
-    position: fixed;
-    inset: 0;
-    background: #000;
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #00ff00;
-}
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 100;
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+        }
 
-.viewport-background {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle, #1a1a1a, #050505);
-    opacity: 0.4;
-}
+        .glitch { position: relative; display: inline-block; }
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 2px; text-shadow: -1px 0 red; top: 0;
+            background: var(--bg); overflow: hidden;
+            clip: rect(0, 900px, 0, 0);
+            animation: noise-anim 2s infinite linear alternate-reverse;
+        }
 
-.glitch { position: relative; }
-.glitch::after {
-    content: attr(data-text);
-    position: absolute;
-    left: 2px;
-    text-shadow: -1px 0 red;
-    animation: glitch 2s infinite;
-}
+        @keyframes noise-anim {
+            0% { clip: rect(10px, 9999px, 20px, 0); }
+            100% { clip: rect(80px, 9999px, 90px, 0); }
+        }
 
-@keyframes glitch {
-    0% { clip: rect(0,9999px,0,0); }
-    50% { clip: rect(0,9999px,50px,0); }
-    100% { clip: rect(0,9999px,0,0); }
-}
+        .scan-line {
+            width: 100%; height: 100px; z-index: 99;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(0, 0, 0, 0) 100%);
+            opacity: 0.1; position: absolute; bottom: 100%;
+            animation: scan 8s linear infinite;
+        }
 
-/* --- ДОБАВЛЕННОЕ --- */
+        @keyframes scan { 0% { bottom: 100%; } 100% { bottom: -100%; } }
 
-#mute-btn {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 999;
-    font-size: 10px;
-    opacity: 0.6;
-    cursor: pointer;
-}
+        .sidebar-link {
+            transition: all 0.3s ease;
+            border-left: 2px solid transparent;
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            padding-left: 1rem;
+            border-left: 2px solid #fff;
+        }
 
+        .btn-branch {
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 12px;
+            text-align: center;
+            transition: all 0.3s;
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            font-size: 0.75rem;
+        }
+        .btn-branch:hover {
+            background: #fff;
+            color: #000;
+        }
 .whisper {
     position: fixed;
     font-size: 10px;
@@ -84,39 +118,54 @@ body {
     50% { opacity: 0.1; }
     100% { opacity: 0; }
 }
-
-</style>
+        
+    </style>
 </head>
+<body class="p-4 md:p-8">
 
-<body>
+    <div id="boot-screen">
+        <div id="boot-log" class="text-xs md:text-sm leading-loose"></div>
+    </div>
 
-<div id="boot-screen">INITIALIZING...</div>
+    <div class="viewport-background"></div>
+    <div class="scan-line"></div>
 
-<div id="mute-btn">MUTE</div>
+    <div class="max-w-7xl mx-auto h-full flex flex-col border border-white/10 relative overflow-hidden bg-black/40 backdrop-blur-sm">
+        
+        <header class="border-b border-white/10 p-4 flex justify-between items-center bg-black/60">
+            <div class="flex items-center gap-4">
+                <span class="text-[10px] opacity-50 uppercase tracking-widest">Status: <span class="text-green-500">Online</span></span>
+                <span class="text-[10px] opacity-50 uppercase tracking-widest">Access: User_Lapin</span>
+            </div>
+            <div class="glitch font-bold tracking-widest text-sm" data-text="LAPIN SYSTEM v2.0">LAPIN SYSTEM v2.0</div>
+            <div class="text-[10px] opacity-50 font-mono" id="clock">00:00:00</div>
+        </header>
 
-<audio id="bg-audio" loop>
-<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8b4f2d6c2.mp3?filename=dark-ambient-11313.mp3">
-</audio>
+        <div class="flex flex-1 overflow-hidden">
+            <nav class="w-72 border-r border-white/10 p-6 flex flex-col gap-2 bg-black/40 overflow-y-auto">
+                <div class="text-[9px] uppercase tracking-widest opacity-30 mb-4 font-bold border-b border-white/10 pb-2">Directories</div>
+                <a href="#vzaidkost" class="sidebar-link p-2 text-xs opacity-60">/root/vzaidkost</a>
+                <a href="#murmure-de-vide" class="sidebar-link p-2 text-xs opacity-60">/root/murmure-de-vide</a>
+                <a href="#ili" class="sidebar-link p-2 text-xs opacity-60">/root/ili</a>
+                <a href="#foryouhaaa" class="sidebar-link p-2 text-xs opacity-60">/root/foryouhaaa</a>
+                <a href="#limite" class="sidebar-link p-2 text-xs opacity-60">/root/limite</a>
+                
+                <div class="mt-6 text-[9px] uppercase tracking-widest opacity-30 font-bold border-b border-white/10 pb-2">Security</div>
+                <a href="#mirror" class="sidebar-link p-2 text-xs text-red-400 opacity-80">/root/mirror_1788</a>
+            </nav>
 
-<div class="flex flex-1 overflow-hidden">
-<nav class="w-72 border-r border-white/10 p-6 flex flex-col gap-2 bg-black/40 overflow-y-auto">
-<div>Directories</div>
-<a href="#vzaidkost" class="sidebar-link">/root/vzaidkost</a>
-<a href="#murmure-de-vide" class="sidebar-link">/root/murmure-de-vide</a>
-<a href="#ili" class="sidebar-link">/root/ili</a>
-<a href="#foryouhaaa" class="sidebar-link">/root/foryouhaaa</a>
-<a href="#limite" class="sidebar-link">/root/limite</a>
+            <main class="flex-1 overflow-y-auto p-12 relative">
+                <div id="view-container" class="max-w-3xl mx-auto opacity-0 transition-all duration-700 transform translate-y-4"></div>
+            </main>
+        </div>
 
-<div>Security</div>
-<a href="#mirror" class="sidebar-link">/root/mirror_1788</a>
-</nav>
+        <footer class="border-t border-white/10 p-2 text-[8px] flex justify-between px-6 bg-black/90">
+            <div class="opacity-20 uppercase tracking-tighter">Syndicate Engine // Void Protocols Active</div>
+            <div class="opacity-20 uppercase tracking-widest">"ответ — это то, что ты сам унесёшь"</div>
+        </footer>
+    </div>
 
-<main class="flex-1 p-12">
-<div id="view-container"></div>
-</main>
-</div>
-
-<script>
+    <script>
         const DATA = {
             'vzaidkost': {
                 title: 'LAPIN // VZAIDKOST',
@@ -182,30 +231,76 @@ body {
             }
         };
 
+        function initBoot() {
+            const log = document.getElementById('boot-log');
+            const lines = ["> INITIALIZING...", "> MOUNTING /ROOT/LAPIN...", "> ACCESSING ARCHIVES...", "> SYSTEM_READY."];
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < lines.length) {
+                    log.innerHTML += `<div>${lines[i]}</div>`;
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('boot-screen').style.opacity = '0';
+                        setTimeout(() => {
+                            document.getElementById('boot-screen').remove();
+                            renderView();
+                        }, 1000);
+                    }, 800);
+                }
+            }, 300);
+        }
 
-/* --- РЕНДЕР ТВОЙ ЖЕ --- */
+        function renderView() {
+            const hash = window.location.hash.replace('#', '') || 'vzaidkost';
+            const container = document.getElementById('view-container');
+            const data = DATA[hash] || DATA['vzaidkost'];
 
-function renderView() {
-    const hash = window.location.hash.replace('#', '') || 'vzaidkost';
-    const container = document.getElementById('view-container');
-    const data = DATA[hash] || DATA['vzaidkost'];
+            document.querySelectorAll('.sidebar-link').forEach(l => {
+                l.classList.toggle('active', l.getAttribute('href') === `#${hash}`);
+            });
 
-    container.innerHTML = `
-        <h2 class="glitch" data-text="${data.title}">${data.title}</h2>
-        ${data.content}
-    `;
-}
+            container.classList.remove('opacity-100', 'translate-y-0');
+            container.classList.add('opacity-0', 'translate-y-4');
 
-/* --- МУЗЫКА --- */
+            setTimeout(() => {
+                container.innerHTML = `<h2 class="text-3xl font-bold mb-12 tracking-tighter uppercase glitch" data-text="${data.title}">${data.title}</h2>${data.content}`;
+                container.classList.remove('opacity-0', 'translate-y-4');
+                container.classList.add('opacity-100', 'translate-y-0');
+            }, 300);
+        }
 
+        function runDecrypt() {
+            const res = document.getElementById('dec-res');
+            const btn = document.getElementById('dec-btn');
+            btn.innerHTML = "DECODING...";
+            setTimeout(() => {
+                const text = "THIS IS NOT A DREAM. SOMEONE IS WATCHING YOU, LAPIN.";
+                res.innerHTML = text;
+                res.setAttribute('data-text', text);
+                res.classList.remove('hidden');
+                btn.style.display = 'none';
+            }, 2000);
+        }
+
+        function updateClock() {
+            document.getElementById('clock').innerText = new Date().toTimeString().split(' ')[0];
+        }
+
+        window.addEventListener('hashchange', renderView);
+        window.onload = () => {
+            initBoot();
+            setInterval(updateClock, 1000);
+        };
 const audio = document.getElementById('bg-audio');
-let playing = false;
+let started = false;
 
 document.body.addEventListener('click', () => {
-    if (!playing) {
-        audio.volume = 0.3;
+    if (!started) {
+        audio.volume = 0.25;
         audio.play();
-        playing = true;
+        started = true;
     }
 });
 
@@ -213,43 +308,24 @@ document.getElementById('mute-btn').onclick = () => {
     audio.muted = !audio.muted;
 };
 
-/* --- LOCAL STORAGE (ПАМЯТЬ) --- */
-
-let visits = localStorage.getItem('visits') || 0;
+        let visits = localStorage.getItem('lapin_visits') || 0;
 visits++;
-localStorage.setItem('visits', visits);
+localStorage.setItem('lapin_visits', visits);
 
 if (visits > 2) {
     setTimeout(() => {
-        alert("ты уже возвращался сюда");
+        console.log("ты снова здесь");
     }, 2000);
 }
-
-/* --- СКРЫТЫЙ КЛИК ТРИГГЕР --- */
-
-let clicks = 0;
+        let hiddenClicks = 0;
 
 document.body.addEventListener('click', (e) => {
     if (e.target === document.body) {
-        clicks++;
-        if (clicks >= 5) {
+        hiddenClicks++;
+        if (hiddenClicks >= 5) {
             window.location.hash = "mirror";
         }
     }
-});
-
-/* --- ВРЕМЯ (НОЧНОЙ РЕЖИМ) --- */
-
-const hour = new Date().getHours();
-
-if (hour >= 2 && hour <= 5) {
-    setTimeout(() => {
-        alert("ты не должен быть здесь ночью");
-    }, 3000);
-}
-
-/* --- ШЕПОТЫ --- */
-
 function spawnWhisper() {
     const el = document.createElement('div');
     el.className = 'whisper';
@@ -263,19 +339,26 @@ function spawnWhisper() {
     setTimeout(()=>el.remove(),6000);
 }
 
-setInterval(spawnWhisper, 4000);
+setInterval(spawnWhisper, 5000);
+    
+});
+        const hour = new Date().getHours();
 
-/* --- BOOT --- */
-
-window.onload = () => {
+if (hour >= 2 && hour <= 5) {
     setTimeout(() => {
-        document.getElementById('boot-screen').remove();
-        renderView();
-    }, 1000);
-};
+        console.log("ночью архив другой");
+    }, 3000);
+}
+        
+    </script>
+    <audio id="bg-audio" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8b4f2d6c2.mp3">
+</audio>
 
-window.addEventListener('hashchange', renderView);
-
-</script>
+<div id="mute-btn" style="
+position:fixed;top:10px;right:10px;
+font-size:10px;opacity:0.5;cursor:pointer;z-index:999;">
+MUTE
+</div>
 </body>
 </html>
