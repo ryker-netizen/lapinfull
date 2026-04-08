@@ -330,15 +330,42 @@ document.body.addEventListener('click', (e) => {
 function spawnWhisper() {
     const el = document.createElement('div');
     el.className = 'whisper';
-    el.innerText = ["ты здесь", "не смотри", "он рядом"][Math.floor(Math.random()*3)];
 
-    el.style.left = Math.random()*100 + "%";
-    el.style.top = Math.random()*100 + "%";
+    // исходные фразы
+    const phrases = [
+        "ты здесь", 
+        "не смотри", 
+        "он рядом",
+        "в архиве тишина", 
+        "эхо без голоса", 
+        "след несказанных слов"
+    ];
+
+    // выбираем случайную фразу
+    let text = phrases[Math.floor(Math.random() * phrases.length)];
+
+    el.innerText = text;
+
+    // случайная позиция
+    el.style.left = Math.random() * 100 + "%";
+    el.style.top = Math.random() * 100 + "%";
 
     document.body.appendChild(el);
 
-    setTimeout(()=>el.remove(),6000);
+    // подменяем текст на долю секунды, имитируя «дрожание»
+    const flickerInterval = setInterval(() => {
+        el.innerText = phrases[Math.floor(Math.random() * phrases.length)];
+    }, 200); // каждые 0.2 секунды
+
+    // удаляем элемент через 6 секунд
+    setTimeout(() => {
+        clearInterval(flickerInterval); // очищаем интервал
+        el.remove();
+    }, 6000);
 }
+
+// запуск каждые 5 секунд
+setInterval(spawnWhisper, 5000);
 
 setInterval(spawnWhisper, 5000);
     
