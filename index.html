@@ -205,7 +205,6 @@
 
         // ====================== ЗАПУСК ======================
         window.addEventListener('hashchange', renderView);
-        window.onload = () => {
             // boot
             initAudio();          // музыка
             setInterval(() => { if (Math.random() > 0.6) showSystemMessage(); }, 240000); // каждые ~4 минуты в среднем
