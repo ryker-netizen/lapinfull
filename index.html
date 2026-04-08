@@ -231,143 +231,140 @@
             }
         };
 
-    // ==== НЕ ЗАВИСЯЩЕЕ ОТ DOM ====
-    let visits = localStorage.getItem('lapin_visits') || 0;
-    visits++;
-    localStorage.setItem('lapin_visits', visits);
+// ==== НЕ ЗАВИСЯЩЕЕ ОТ DOM ====
+let visits = localStorage.getItem('lapin_visits') || 0;
+visits++;
+localStorage.setItem('lapin_visits', visits);
 
-    if (visits > 2) setTimeout(() => console.log("ты снова здесь"), 2000);
-    const hour = new Date().getHours();
-    if (hour >= 2 && hour <= 5) setTimeout(() => console.log("ночью архив другой"), 3000);
+if (visits > 2) setTimeout(() => console.log("ты снова здесь"), 2000);
+const hour = new Date().getHours();
+if (hour >= 2 && hour <= 5) setTimeout(() => console.log("ночью архив другой"), 3000);
 
+let started = false;
+let hiddenClicks = 0;
 
-        document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('dec-btn')?.addEventListener('click', () => {
-        const res = document.getElementById('dec-res');
+// ===== Boot лог =====
+function initBoot() {
+    const bootLog = document.getElementById('boot-log');
+    if (!bootLog) return;
+    bootLog.innerHTML = ""> INITIALIZING...", "> MOUNTING /ROOT/LAPIN...", "> ACCESSING ARCHIVES...", "> SYSTEM_READY."";
+    setTimeout(() => {
+        document.getElementById('boot-screen').style.display = 'none';
+    }, 1500);
+}
+
+// ===== Декодер MIRROR =====
+function runDecrypt() {
+    const res = document.getElementById('dec-res');
+    const btn = document.getElementById('dec-btn');
+    btn.innerHTML = "DECODING...";
+    setTimeout(() => {
         const text = "THIS IS NOT A DREAM. SOMEONE IS WATCHING YOU, LAPIN.";
         res.innerHTML = text;
         res.setAttribute('data-text', text);
         res.classList.remove('hidden');
-        document.getElementById('dec-btn').style.display = 'none';
+        btn.style.display = 'none';
+    }, 2000);
+}
+
+// ===== Воспроизведение аудио =====
+function playAudioForRoot(root) {
+    document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
+    const audio = document.getElementById('audio-' + root);
+    if (audio) audio.play().catch(e => console.log("Audio error:", e));
+}
+
+// ===== Рендер вью =====
+function renderView() {
+    const hash = window.location.hash.replace('#', '') || 'vzaidkost';
+    const container = document.getElementById('view-container');
+    const data = DATA[hash] || DATA['vzaidkost'];
+
+    document.querySelectorAll('.sidebar-link').forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === `#${hash}`);
     });
-});
 
-    // ==== ВСЁ, ЧТО ВЗАИМОДЕЙСТВУЕТ С DOM ====
-    let started = false;
-    let hiddenClicks = 0;
+    container.classList.remove('opacity-100', 'translate-y-0');
+    container.classList.add('opacity-0', 'translate-y-4');
 
-    window.onload = () => { 
-  function playAudioForRoot(root) {
-        document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
-        const audio = document.getElementById('audio-' + root);
-        if(audio) audio.play();
+    setTimeout(() => {
+        container.innerHTML = `<h2 class="text-3xl font-bold mb-12 tracking-tighter uppercase glitch" data-text="${data.title}">${data.title}</h2>${data.content}`;
+        container.classList.remove('opacity-0', 'translate-y-4');
+        container.classList.add('opacity-100', 'translate-y-0');
+
+        if(started) playAudioForRoot(hash);
+    }, 300);
+}
+
+// ===== Шепоты =====
+function spawnWhisper() {
+    const el = document.createElement('div');
+    el.className = 'whisper';
+    const phrases = ["ты здесь", "не смотри", "он рядом", "в архиве тишина", "эхо без голоса", "след несказанных слов"];
+    el.innerText = phrases[Math.floor(Math.random() * phrases.length)];
+    el.style.left = Math.random() * 100 + "%";
+    el.style.top = Math.random() * 100 + "%";
+    document.body.appendChild(el);
+    const flickerInterval = setInterval(() => {
+        el.innerText = phrases[Math.floor(Math.random() * phrases.length)];
+    }, 200);
+    setTimeout(() => { clearInterval(flickerInterval); el.remove(); }, 6000);
+}
+
+// ===== Часы =====
+function updateClock() {
+    document.getElementById('clock').innerText = new Date().toTimeString().split(' ')[0];
+}
+
+// ===== Обработчики кликов =====
+window.onload = () => {
+    // Boot
+    initBoot();
+
+    // Декодер
+    document.getElementById('dec-btn')?.addEventListener('click', () => runDecrypt());
+
+    // Sidebar
+    document.querySelectorAll('.sidebar-link').forEach(link => {
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            const hash = link.getAttribute('href').replace('#','');
+            window.location.hash = hash;
+            renderView();
+            playAudioForRoot(hash);
+        });
+    });
+
+    // Мут аудио
+    const muteBtn = document.getElementById('mute-btn');
+    if (muteBtn){
+        muteBtn.onclick = () => {
+            const hash = window.location.hash.replace('#','') || 'vzaidkost';
+            const audio = document.getElementById('audio-' + hash);
+            if(audio) audio.muted = !audio.muted;
+        };
     }
 
-    // ===== Boot лог =====
-    function initBoot() { ... }
-
-    // ===== Декодер MIRROR =====
-    function runDecrypt() {
-        const res = document.getElementById('dec-res');
-        const btn = document.getElementById('dec-btn');
-        btn.innerHTML = "DECODING...";
-        setTimeout(() => {
-            const text = "THIS IS NOT A DREAM. SOMEONE IS WATCHING YOU, LAPIN.";
-            res.innerHTML = text;
-            res.setAttribute('data-text', text);
-            res.classList.remove('hidden');
-            btn.style.display = 'none';
-        }, 2000);
-    }
-        // ===== Рендер вью =====
-        function renderView() {
-            const hash = window.location.hash.replace('#', '') || 'vzaidkost';
-            const container = document.getElementById('view-container');
-            const data = DATA[hash] || DATA['vzaidkost'];
-
-            document.querySelectorAll('.sidebar-link').forEach(l => {
-                l.classList.toggle('active', l.getAttribute('href') === `#${hash}`);
-            });
-
-            container.classList.remove('opacity-100', 'translate-y-0');
-            container.classList.add('opacity-0', 'translate-y-4');
-
-            setTimeout(() => {
-                container.innerHTML = `<h2 class="text-3xl font-bold mb-12 tracking-tighter uppercase glitch" data-text="${data.title}">${data.title}</h2>${data.content}`;
-                container.classList.remove('opacity-0', 'translate-y-4');
-                container.classList.add('opacity-100', 'translate-y-0');
-
-                if(started) playAudioForRoot(hash);
-            }, 300);
+    // Клики по телу
+    document.body.addEventListener('click', (e) => {
+        if (e.target === document.body) {
+            hiddenClicks++;
+            if (hiddenClicks >= 5) window.location.hash = "mirror";
         }
-
-        // ===== Шепоты =====
-        function spawnWhisper() {
-            const el = document.createElement('div');
-            el.className = 'whisper';
-
-            const phrases = [
-                "ты здесь", "не смотри", "он рядом",
-                "в архиве тишина", "эхо без голоса", "след несказанных слов"
-            ];
-
-            el.innerText = phrases[Math.floor(Math.random() * phrases.length)];
-            el.style.left = Math.random() * 100 + "%";
-            el.style.top = Math.random() * 100 + "%";
-
-            document.body.appendChild(el);
-
-            const flickerInterval = setInterval(() => {
-                el.innerText = phrases[Math.floor(Math.random() * phrases.length)];
-            }, 200);
-
-            setTimeout(() => { clearInterval(flickerInterval); el.remove(); }, 6000);
+        if(!started) {
+            started = true;
+            const hash = window.location.hash.replace('#','') || 'vzaidkost';
+            playAudioForRoot(hash);
         }
+    });
 
-        // ===== Часы =====
-        function updateClock() {
-            document.getElementById('clock').innerText = new Date().toTimeString().split(' ')[0];
-        }
-
-        // ===== Обработчики кликов =====
-        document.body.addEventListener('click', (e) => {
-            if (e.target === document.body) {
-                hiddenClicks++;
-                if (hiddenClicks >= 5) window.location.hash = "mirror";
-            }
-            if (!started) {
-                started = true;
-                const hash = window.location.hash.replace('#', '') || 'vzaidkost';
-                playAudioForRoot(hash);
-            }
-        });
-
-        document.querySelectorAll('.sidebar-link').forEach(link => {
-            link.addEventListener('click', e => {
-                e.preventDefault();               
-                const hash = link.getAttribute('href').replace('#','');
-                window.location.hash = hash;
-                renderView();
-                playAudioForRoot(hash);
-            });
-        });
-
-        const muteBtn = document.getElementById('mute-btn');
-        if(muteBtn){
-            muteBtn.onclick = () => {
-                const hash = window.location.hash.replace('#','') || 'vzaidkost';
-                const audio = document.getElementById('audio-' + hash);
-                if(audio) audio.muted = !audio.muted;
-            };
-        }
-
-        // ===== Запуски =====
-        initBoot();
-        setInterval(updateClock, 1000);
-        setInterval(spawnWhisper, 5000);
-    };
+    // Запуски
+    renderView();
+    setInterval(updateClock, 1000);
+    setInterval(spawnWhisper, 5000);
+};
 </script>
-
+    
 <!-- Аудио источники -->
 <audio id="audio-vzaidkost" src="https://mn1.sunproxy.net/file/NFV5UEQ0dVp3OWhralBlL1JDanR6V3oveWFmR1JKM2gzQnVyNkVaMldtNTE0cE80VGwyM2xYb0pZL2RRaGJGRHhKRmVRWmxBdzdNTGZkbFpnM1ZDc2xETmJxRElzU0NSTVd3N3h6M04rbkU9/Dead_Melodies_-_Winter_s_Bite_(mp3.mn).mp3.mp3" preload="auto"></audio>
 <audio id="audio-murmure" src="https://mn1.sunproxy.net/file/NFV5UEQ0dVp3OWhralBlL1JDanR6V3oveWFmR1JKM2gzQnVyNkVaMldtNTE0cE80VGwyM2xYb0pZL2RRaGJGRFdGZktJU2NPMmZWVGJqVCtwNUxzaVo3NUtxZ3BSUkN2UFlXVWJGL1hnWmM9/Biosphere_and_Deathprod_-_Trasparenza_(mp3.mn).mp3" preload="auto"></audio>
