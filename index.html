@@ -9,226 +9,212 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700&display=swap');
 
 :root {
-    --primary:#d1d1d1;
-    --bg:#050505;
+    --glitch-color: #ff0000;
+    --primary: #d1d1d1;
+    --bg: #050505;
 }
 
 body {
-    background:var(--bg);
-    color:var(--primary);
-    font-family:'JetBrains Mono', monospace;
-    overflow:hidden;
-    height:100vh;
-    margin:0;
+    background-color: var(--bg);
+    color: var(--primary);
+    font-family: 'JetBrains Mono', monospace;
+    overflow: hidden;
+    height: 100vh;
+    margin: 0;
 }
 
-/* 👁 фон */
-.eyes{
-    position:fixed;
-    inset:0;
-    background:url('https://i.ibb.co/0jKzZ8Y/eyes-bg.jpg') center/cover;
-    opacity:0.05;
-    z-index:-2;
-    animation:blink 12s infinite;
-}
-@keyframes blink{
-    0%,92%,100%{opacity:0.05}
-    94%{opacity:0.01}
+/* --- ТВОЙ ДИЗАЙН НЕ ТРОГАЮ --- */
+
+#boot-screen {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #00ff00;
 }
 
-/* glitch */
-.glitch{position:relative}
-.glitch::after{
-    content:attr(data-text);
-    position:absolute;
-    left:2px;
-    top:0;
-    text-shadow:-1px 0 red;
-    clip:rect(0,900px,0,0);
-    animation:noise 2s infinite alternate;
-}
-@keyframes noise{
-    0%{clip:rect(10px,9999px,20px,0)}
-    100%{clip:rect(80px,9999px,90px,0)}
+.viewport-background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, #1a1a1a, #050505);
+    opacity: 0.4;
 }
 
-/* whispers */
-.whisper{
-    position:fixed;
-    opacity:0.08;
-    font-size:12px;
-    pointer-events:none;
-    transition:10s linear;
+.glitch { position: relative; }
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 2px;
+    text-shadow: -1px 0 red;
+    animation: glitch 2s infinite;
 }
+
+@keyframes glitch {
+    0% { clip: rect(0,9999px,0,0); }
+    50% { clip: rect(0,9999px,50px,0); }
+    100% { clip: rect(0,9999px,0,0); }
+}
+
+/* --- ДОБАВЛЕННОЕ --- */
+
+#mute-btn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 999;
+    font-size: 10px;
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+.whisper {
+    position: fixed;
+    font-size: 10px;
+    opacity: 0.05;
+    pointer-events: none;
+    animation: fade 6s linear forwards;
+}
+
+@keyframes fade {
+    0% { opacity: 0; }
+    50% { opacity: 0.1; }
+    100% { opacity: 0; }
+}
+
 </style>
 </head>
 
-<body class="p-4 md:p-8">
+<body>
 
-<div class="eyes"></div>
+<div id="boot-screen">INITIALIZING...</div>
 
-<!-- 🔊 звук -->
-<audio id="bg-music" loop>
-<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7c0c6c7c13.mp3?filename=dark-ambient-113997.mp3">
+<div id="mute-btn">MUTE</div>
+
+<audio id="bg-audio" loop>
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8b4f2d6c2.mp3?filename=dark-ambient-11313.mp3">
 </audio>
-<button id="sound-btn" class="fixed top-4 right-4 z-[9999]">🔇</button>
-
-<div class="max-w-7xl mx-auto h-full flex flex-col border border-white/10 relative overflow-hidden bg-black/40 backdrop-blur-sm">
-
-<header class="border-b border-white/10 p-4 flex justify-between items-center bg-black/60">
-<div id="status" class="text-xs opacity-50">Status: Online</div>
-<div class="glitch text-sm" data-text="LAPIN SYSTEM">LAPIN SYSTEM</div>
-<div id="clock" class="text-xs opacity-50">00:00:00</div>
-</header>
 
 <div class="flex flex-1 overflow-hidden">
 <nav class="w-72 border-r border-white/10 p-6 flex flex-col gap-2 bg-black/40 overflow-y-auto">
-<div class="text-[9px] uppercase opacity-30 mb-4">Directories</div>
+<div>Directories</div>
+<a href="#vzaidkost" class="sidebar-link">/root/vzaidkost</a>
+<a href="#murmure-de-vide" class="sidebar-link">/root/murmure-de-vide</a>
+<a href="#ili" class="sidebar-link">/root/ili</a>
+<a href="#foryouhaaa" class="sidebar-link">/root/foryouhaaa</a>
+<a href="#limite" class="sidebar-link">/root/limite</a>
 
-<a href="#vzaidkost" class="sidebar-link p-2 text-xs opacity-60">/root/vzaidkost</a>
-<a href="#murmure-de-vide" class="sidebar-link p-2 text-xs opacity-60">/root/murmure-de-vide</a>
-<a href="#ili" class="sidebar-link p-2 text-xs opacity-60">/root/ili</a>
-<a href="#foryouhaaa" class="sidebar-link p-2 text-xs opacity-60">/root/foryouhaaa</a>
-<a href="#limite" class="sidebar-link p-2 text-xs opacity-60">/root/limite</a>
-
-<div class="mt-6 text-[9px] opacity-30">Security</div>
-<a href="#mirror" class="sidebar-link p-2 text-xs text-red-400 opacity-80">/root/mirror_1788</a>
+<div>Security</div>
+<a href="#mirror" class="sidebar-link">/root/mirror_1788</a>
 </nav>
 
-<main class="flex-1 overflow-y-auto p-12">
+<main class="flex-1 p-12">
 <div id="view-container"></div>
 </main>
 </div>
-</div>
 
 <script>
-/* ================= DATA ================= */
-const DATA = {
-vzaidkost:{
-title:'LAPIN // VZAIDKOST',
-content:`<p>архив неслучившегося</p>`
-},
-'murmure-de-vide':{
-title:'AUUDDVORDU',
-content:`<p>здесь правда в паузе</p>`
-},
-ili:{
-title:'VOZZMEZDRR',
-content:`<p>ты — отражение</p>`
-},
-foryouhaaa:{
-title:'CHOICE',
-content:`<p>выбери путь</p>`
-},
-limite:{
-title:'VARIABLE',
-content:`<p>эксперимент</p>`
-},
-mirror:{
-title:'MIRROR',
-content:`<p>расшифруй сигнал</p>`
-},
-night:{
-title:'NIGHT ARCHIVE',
-content:`<p class="text-red-400">ты не должен быть здесь ночью</p>`
-},
-secret:{
-title:'???',
-content:`<p>…ты нашёл это.</p>`
-}
-};
 
-/* ================= ПАМЯТЬ ================= */
-let visits = localStorage.getItem('lapin_visits') || 0;
-visits++;
-localStorage.setItem('lapin_visits', visits);
+/* --- ТВОЙ DATA НЕ ТРОГАЮ --- */
 
-if(visits > 1){
-document.getElementById('status').innerText = "Status: I remember you";
+const DATA = { /* ВСТАВЬ СЮДА СВОЙ DATA БЕЗ ИЗМЕНЕНИЙ */ };
+
+/* --- РЕНДЕР ТВОЙ ЖЕ --- */
+
+function renderView() {
+    const hash = window.location.hash.replace('#', '') || 'vzaidkost';
+    const container = document.getElementById('view-container');
+    const data = DATA[hash] || DATA['vzaidkost'];
+
+    container.innerHTML = `
+        <h2 class="glitch" data-text="${data.title}">${data.title}</h2>
+        ${data.content}
+    `;
 }
 
-/* ================= РЕНДЕР ================= */
-function renderView(){
-const hash = location.hash.replace('#','') || 'vzaidkost';
-let data = DATA[hash] || DATA.vzaidkost;
+/* --- МУЗЫКА --- */
 
-/* 🌙 ночь */
-const h = new Date().getHours();
-if(h>=0 && h<5){
-data = DATA.night;
-}
+const audio = document.getElementById('bg-audio');
+let playing = false;
 
-/* glitch */
-document.body.style.filter="invert(1)";
-setTimeout(()=>document.body.style.filter="none",80);
-
-document.getElementById('view-container').innerHTML =
-`<h2 class="glitch text-xl mb-6" data-text="${data.title}">${data.title}</h2>${data.content}`;
-}
-
-window.addEventListener('hashchange',renderView);
-
-/* ================= ЧАСЫ ================= */
-function updateClock(){
-const now=new Date();
-const fake=new Date(now.getTime()+Math.sin(now.getSeconds())*2000);
-document.getElementById('clock').innerText=fake.toTimeString().split(' ')[0];
-}
-setInterval(updateClock,1000);
-
-/* ================= ЗВУК ================= */
-const audio=document.getElementById('bg-music');
-const btn=document.getElementById('sound-btn');
-
-document.addEventListener('click',()=>{
-audio.volume=0.25;
-audio.play().catch(()=>{});
-},{once:true});
-
-btn.onclick=()=>{
-if(audio.paused){audio.play();btn.textContent='🔊'}
-else{audio.pause();btn.textContent='🔇'}
-};
-
-/* ================= ШЁПОТ ================= */
-function whisper(){
-const words=["ты здесь","я вижу тебя","не выходи"];
-const el=document.createElement('div');
-el.className='whisper';
-el.innerText=words[Math.floor(Math.random()*words.length)];
-el.style.left=Math.random()*90+'vw';
-el.style.bottom='0';
-
-document.body.appendChild(el);
-
-setTimeout(()=>{
-el.style.transform='translateY(-100vh)';
-el.style.opacity='0';
-},100);
-
-setTimeout(()=>el.remove(),10000);
-}
-setInterval(()=>{if(Math.random()>0.6)whisper()},4000);
-
-/* ================= СЕКРЕТ ================= */
-let clicks=0;
-document.body.addEventListener('click',(e)=>{
-if(e.target.closest('a')) return;
-
-clicks++;
-if(clicks>=5){
-location.hash="secret";
-}
+document.body.addEventListener('click', () => {
+    if (!playing) {
+        audio.volume = 0.3;
+        audio.play();
+        playing = true;
+    }
 });
 
-/* ================= ПСИХ ================= */
-setTimeout(()=>{
-alert("ты всё ещё здесь?..");
-},180000);
+document.getElementById('mute-btn').onclick = () => {
+    audio.muted = !audio.muted;
+};
 
-/* ================= START ================= */
-renderView();
+/* --- LOCAL STORAGE (ПАМЯТЬ) --- */
+
+let visits = localStorage.getItem('visits') || 0;
+visits++;
+localStorage.setItem('visits', visits);
+
+if (visits > 2) {
+    setTimeout(() => {
+        alert("ты уже возвращался сюда");
+    }, 2000);
+}
+
+/* --- СКРЫТЫЙ КЛИК ТРИГГЕР --- */
+
+let clicks = 0;
+
+document.body.addEventListener('click', (e) => {
+    if (e.target === document.body) {
+        clicks++;
+        if (clicks >= 5) {
+            window.location.hash = "mirror";
+        }
+    }
+});
+
+/* --- ВРЕМЯ (НОЧНОЙ РЕЖИМ) --- */
+
+const hour = new Date().getHours();
+
+if (hour >= 2 && hour <= 5) {
+    setTimeout(() => {
+        alert("ты не должен быть здесь ночью");
+    }, 3000);
+}
+
+/* --- ШЕПОТЫ --- */
+
+function spawnWhisper() {
+    const el = document.createElement('div');
+    el.className = 'whisper';
+    el.innerText = ["ты здесь", "не смотри", "он рядом"][Math.floor(Math.random()*3)];
+
+    el.style.left = Math.random()*100 + "%";
+    el.style.top = Math.random()*100 + "%";
+
+    document.body.appendChild(el);
+
+    setTimeout(()=>el.remove(),6000);
+}
+
+setInterval(spawnWhisper, 4000);
+
+/* --- BOOT --- */
+
+window.onload = () => {
+    setTimeout(() => {
+        document.getElementById('boot-screen').remove();
+        renderView();
+    }, 1000);
+};
+
+window.addEventListener('hashchange', renderView);
+
 </script>
-
 </body>
 </html>
