@@ -240,59 +240,45 @@
     const hour = new Date().getHours();
     if (hour >= 2 && hour <= 5) setTimeout(() => console.log("ночью архив другой"), 3000);
 
+
+        document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('dec-btn')?.addEventListener('click', () => {
+        const res = document.getElementById('dec-res');
+        const text = "THIS IS NOT A DREAM. SOMEONE IS WATCHING YOU, LAPIN.";
+        res.innerHTML = text;
+        res.setAttribute('data-text', text);
+        res.classList.remove('hidden');
+        document.getElementById('dec-btn').style.display = 'none';
+    });
+});
+
     // ==== ВСЁ, ЧТО ВЗАИМОДЕЙСТВУЕТ С DOM ====
     let started = false;
     let hiddenClicks = 0;
 
-    window.onload = () => {
-        // ===== Boot лог =====
-        function initBoot() {
-            const log = document.getElementById('boot-log');
-            const lines = [
-                "> INITIALIZING...",
-                "> MOUNTING /ROOT/LAPIN...",
-                "> ACCESSING ARCHIVES...",
-                "> SYSTEM_READY."
-            ];
-            let i = 0;
-            const interval = setInterval(() => {
-                if (i < lines.length) {
-                    log.innerHTML += `<div>${lines[i]}</div>`;
-                    i++;
-                } else {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        document.getElementById('boot-screen').style.opacity = '0';
-                        setTimeout(() => {
-                            document.getElementById('boot-screen').remove();
-                            renderView();
-                        }, 1000);
-                    }, 800);
-                }
-            }, 300);
-        }
+    window.onload = () => { 
+  function playAudioForRoot(root) {
+        document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
+        const audio = document.getElementById('audio-' + root);
+        if(audio) audio.play();
+    }
 
-        // ===== Декодер MIRROR =====
-        function runDecrypt() {
-            const res = document.getElementById('dec-res');
-            const btn = document.getElementById('dec-btn');
-            btn.innerHTML = "DECODING...";
-            setTimeout(() => {
-                const text = "THIS IS NOT A DREAM. SOMEONE IS WATCHING YOU, LAPIN.";
-                res.innerHTML = text;
-                res.setAttribute('data-text', text);
-                res.classList.remove('hidden');
-                btn.style.display = 'none';
-            }, 2000);
-        }
+    // ===== Boot лог =====
+    function initBoot() { ... }
 
-        // ===== Аудио =====
-        function playAudioForRoot(root) {
-            document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
-            const audio = document.getElementById('audio-' + root);
-            if(audio) audio.play();
-        }
-
+    // ===== Декодер MIRROR =====
+    function runDecrypt() {
+        const res = document.getElementById('dec-res');
+        const btn = document.getElementById('dec-btn');
+        btn.innerHTML = "DECODING...";
+        setTimeout(() => {
+            const text = "THIS IS NOT A DREAM. SOMEONE IS WATCHING YOU, LAPIN.";
+            res.innerHTML = text;
+            res.setAttribute('data-text', text);
+            res.classList.remove('hidden');
+            btn.style.display = 'none';
+        }, 2000);
+    }
         // ===== Рендер вью =====
         function renderView() {
             const hash = window.location.hash.replace('#', '') || 'vzaidkost';
