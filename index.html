@@ -231,21 +231,20 @@
             }
         };
 
-        // ==== НЕ ЗАВИСЯЩЕЕ ОТ DOM ====
+    // ==== НЕ ЗАВИСЯЩЕЕ ОТ DOM ====
     let visits = localStorage.getItem('lapin_visits') || 0;
     visits++;
     localStorage.setItem('lapin_visits', visits);
 
     if (visits > 2) setTimeout(() => console.log("ты снова здесь"), 2000);
-
     const hour = new Date().getHours();
     if (hour >= 2 && hour <= 5) setTimeout(() => console.log("ночью архив другой"), 3000);
 
     // ==== ВСЁ, ЧТО ВЗАИМОДЕЙСТВУЕТ С DOM ====
-    window.onload = () => {
-        let started = false;
-        let hiddenClicks = 0;
+    let started = false;
+    let hiddenClicks = 0;
 
+    window.onload = () => {
         // ===== Boot лог =====
         function initBoot() {
             const log = document.getElementById('boot-log');
@@ -273,48 +272,25 @@
             }, 300);
         }
 
-        // ВНЕ window.onload
-function runDecrypt() {
-    const res = document.getElementById('dec-res');
-    const btn = document.getElementById('dec-btn');
-    btn.innerHTML = "DECODING...";
-    setTimeout(() => {
-        const text = "THIS IS NOT A DREAM. SOMEONE IS WATCHING YOU, LAPIN.";
-        res.innerHTML = text;
-        res.setAttribute('data-text', text);
-        res.classList.remove('hidden');
-        btn.style.display = 'none';
-    }, 2000);
-}
+        // ===== Декодер MIRROR =====
+        function runDecrypt() {
+            const res = document.getElementById('dec-res');
+            const btn = document.getElementById('dec-btn');
+            btn.innerHTML = "DECODING...";
+            setTimeout(() => {
+                const text = "THIS IS NOT A DREAM. SOMEONE IS WATCHING YOU, LAPIN.";
+                res.innerHTML = text;
+                res.setAttribute('data-text', text);
+                res.classList.remove('hidden');
+                btn.style.display = 'none';
+            }, 2000);
+        }
 
-window.onload = () => {
-    // весь остальной JS остаётся внутри window.onload
-};
         // ===== Аудио =====
         function playAudioForRoot(root) {
             document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
-
-            switch(root) {
-    case 'vzaidkost':
-        document.getElementById('audio-vzaidkost').play();
-        break;
-    case 'murmure-de-vide':
-        document.getElementById('audio-murmure').play();
-        break;
-    case 'ili':
-        document.getElementById('audio-ili').play();
-        break;
-    case 'foryouhaaa':
-        document.getElementById('audio-foryouhaaa').play();
-        break;
-    case 'limite':
-        document.getElementById('audio-limite').play();
-        break;
-    case 'mirror_1788':
-        document.getElementById('audio-mirror_1788').play();
-        break;
-}
-            }
+            const audio = document.getElementById('audio-' + root);
+            if(audio) audio.play();
         }
 
         // ===== Рендер вью =====
@@ -367,7 +343,7 @@ window.onload = () => {
             document.getElementById('clock').innerText = new Date().toTimeString().split(' ')[0];
         }
 
-        // ===== Обработчики =====
+        // ===== Обработчики кликов =====
         document.body.addEventListener('click', (e) => {
             if (e.target === document.body) {
                 hiddenClicks++;
@@ -381,22 +357,23 @@ window.onload = () => {
         });
 
         document.querySelectorAll('.sidebar-link').forEach(link => {
-    link.addEventListener('click', e => {
-        e.preventDefault();               // чтобы страница не прыгала
-        const hash = link.getAttribute('href').replace('#','');
-        window.location.hash = hash;      // меняем hash
-        renderView();                     // рендерим контент
-        playAudioForRoot(hash);           // включаем аудио
-    });
-});
+            link.addEventListener('click', e => {
+                e.preventDefault();               
+                const hash = link.getAttribute('href').replace('#','');
+                window.location.hash = hash;
+                renderView();
+                playAudioForRoot(hash);
+            });
+        });
 
-        document.getElementById('mute-btn').onclick = () => {
-            const hash = window.location.hash.replace('#','') || 'vzaidkost';
-            const audio = document.getElementById(
-                hash === 'murmure-de-vide' ? 'audio-murmure' : 'audio-' + hash
-            );
-            if(audio) audio.muted = !audio.muted;
-        };
+        const muteBtn = document.getElementById('mute-btn');
+        if(muteBtn){
+            muteBtn.onclick = () => {
+                const hash = window.location.hash.replace('#','') || 'vzaidkost';
+                const audio = document.getElementById('audio-' + hash);
+                if(audio) audio.muted = !audio.muted;
+            };
+        }
 
         // ===== Запуски =====
         initBoot();
