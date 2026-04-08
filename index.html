@@ -364,6 +364,16 @@
             }
         });
 
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+    link.addEventListener('click', e => {
+        e.preventDefault();               // чтобы страница не прыгала
+        const hash = link.getAttribute('href').replace('#','');
+        window.location.hash = hash;      // меняем hash
+        renderView();                     // рендерим контент
+        playAudioForRoot(hash);           // включаем аудио
+    });
+});
+
         document.getElementById('mute-btn').onclick = () => {
             const hash = window.location.hash.replace('#','') || 'vzaidkost';
             const audio = document.getElementById(
