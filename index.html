@@ -305,11 +305,12 @@ function renderView() {
 
     setTimeout(() => {
         let htmlContent;
-        if (hash === 'mirror') {
-            htmlContent = `
-                <h2 class="text-3xl font-bold mb-12 tracking-tighter uppercase glitch" data-text="${DATA['mirror'].title}">${DATA['mirror'].title}</h2>
-                ${DATA['mirror'].content}
-            `;
+        if (hash === 'mirror' || hash === 'mirror_1788') {
+    htmlContent = `
+        <h2 class="text-3xl font-bold mb-12 tracking-tighter uppercase glitch" data-text="${DATA['mirror_1788'].title}">${DATA['mirror_1788'].title}</h2>
+        ${DATA['mirror_1788'].content}
+    `;
+                    }
         } else {
             const data = DATA[hash] || DATA['vzaidkost'];
             htmlContent = `
