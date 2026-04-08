@@ -295,7 +295,6 @@ function playAudioForRoot(root) {
 function renderView() {
     const hash = window.location.hash.replace('#', '') || 'vzaidkost';
     const container = document.getElementById('view-container');
-    const data = DATA[hash] || DATA['vzaidkost'];
 
     document.querySelectorAll('.sidebar-link').forEach(l => {
         l.classList.toggle('active', l.getAttribute('href') === `#${hash}`);
@@ -305,11 +304,23 @@ function renderView() {
     container.classList.add('opacity-0', 'translate-y-4');
 
     setTimeout(() => {
-        container.innerHTML = `<h2 class="text-3xl font-bold mb-12 tracking-tighter uppercase glitch" data-text="${data.title}">${data.title}</h2>${data.content}`;
+        let htmlContent;
+        if (hash === 'mirror') {
+            htmlContent = `
+                <h2 class="text-3xl font-bold mb-12 tracking-tighter uppercase glitch" data-text="${DATA['mirror'].title}">${DATA['mirror'].title}</h2>
+                ${DATA['mirror'].content}
+            `;
+        } else {
+            const data = DATA[hash] || DATA['vzaidkost'];
+            htmlContent = `
+                <h2 class="text-3xl font-bold mb-12 tracking-tighter uppercase glitch" data-text="${data.title}">${data.title}</h2>
+                ${data.content}
+            `;
+        }
+
+        container.innerHTML = htmlContent;
         container.classList.remove('opacity-0', 'translate-y-4');
         container.classList.add('opacity-100', 'translate-y-0');
-
-        if(started) playAudioForRoot(hash);
     }, 300);
 }
 
