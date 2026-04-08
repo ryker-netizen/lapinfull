@@ -281,14 +281,14 @@ function runDecrypt() {
     }, 2000);
 }
 
-// ===== Воспроизведение аудио =====
 function playAudioForRoot(root) {
     document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
-    let audioId = 'audio-' + root;
-if (root === 'mirror') audioId = 'audio-mirror';
 
-const audio = document.getElementById(audioId);
-if (audio) audio.play().catch(e => console.log("Audio error:", e));
+    // Используем точное совпадение с id
+    let audioId = 'audio-' + root.replace('#', '');
+    const audio = document.getElementById(audioId);
+
+    if(audio) audio.play().catch(e => console.log("Audio error:", e));
 }
 
 // ===== Рендер вью =====
