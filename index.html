@@ -251,47 +251,6 @@
                 }
             }, 300);
         }
-
-        function playAudioForRoot(root) {
-    // Сначала заглушаем все
-    document.querySelectorAll('audio').forEach(a => a.pause());
-
-    switch(root) {
-        case 'vzaidkost':
-            document.getElementById('audio-vzaidkost').play();
-            break;
-        case 'murmure-de-vide':
-            document.getElementById('audio-murmure').play();
-            break;
-        // и так далее для каждой директории
-    }
-}
-
-// В renderView()
-playAudioForRoot(hash);
-
-        function renderView() {
-    const hash = window.location.hash.replace('#', '') || 'vzaidkost';
-    const container = document.getElementById('view-container');
-    const data = DATA[hash] || DATA['vzaidkost'];
-
-    document.querySelectorAll('.sidebar-link').forEach(l => {
-        l.classList.toggle('active', l.getAttribute('href') === `#${hash}`);
-    });
-
-    container.classList.remove('opacity-100', 'translate-y-0');
-    container.classList.add('opacity-0', 'translate-y-4');
-
-    setTimeout(() => {
-        container.innerHTML = `<h2 class="text-3xl font-bold mb-12 tracking-tighter uppercase glitch" data-text="${data.title}">${data.title}</h2>${data.content}`;
-        container.classList.remove('opacity-0', 'translate-y-4');
-        container.classList.add('opacity-100', 'translate-y-0');
-
-        // запустить аудио после рендера
-        playAudioForRoot(hash);
-    }, 300);
-}
-
         function runDecrypt() {
             const res = document.getElementById('dec-res');
             const btn = document.getElementById('dec-btn');
@@ -303,38 +262,7 @@ playAudioForRoot(hash);
                 res.classList.remove('hidden');
                 btn.style.display = 'none';
             }, 2000);
-        }
-
-        function updateClock() {
-            document.getElementById('clock').innerText = new Date().toTimeString().split(' ')[0];
-        }
-
-        window.addEventListener('hashchange', renderView);
-        window.onload = () => {
-            initBoot();
-            setInterval(updateClock, 1000);
-        };
-let started = false;
-
-document.body.addEventListener('click', () => {
-    if (!started) {
-        // Запуск аудио текущей вкладки
-        const hash = window.location.hash.replace('#','') || 'vzaidkost';
-        const audio = document.getElementById('audio-' + (hash === 'murmure-de-vide' ? 'murmure' : hash));
-        if(audio){
-            audio.volume = 0.25;
-            audio.play();
-        }
-        started = true;
-    }
-});
-
-document.getElementById('mute-btn').onclick = () => {
-    const hash = window.location.hash.replace('#','') || 'vzaidkost';
-    const audio = document.getElementById('audio-' + (hash === 'murmure-de-vide' ? 'murmure' : hash));
-    if(audio) audio.muted = !audio.muted;
-};
-
+       
         let visits = localStorage.getItem('lapin_visits') || 0;
 visits++;
 localStorage.setItem('lapin_visits', visits);
@@ -402,10 +330,83 @@ if (hour >= 2 && hour <= 5) {
         console.log("ночью архив другой");
     }, 3000);
 }
-        
-    </script>
-    <audio id="audio-vzaidkost" src="https://rus.hitmotop.com/song/72051472.mp3" preload="none"></audio>
-<audio id="audio-murmure" src="URL_ДРУГОЙ_ПЕСНИ" preload="none"></audio>
+
+        function playAudioForRoot(root) {
+        // Заглушаем все
+        document.querySelectorAll('audio').forEach(a => {
+            a.pause();
+            a.currentTime = 0;
+        });
+
+        // Запускаем нужный
+        switch(root) {
+            case 'vzaidkost':
+                document.getElementById('audio-vzaidkost').play();
+                break;
+            case 'murmure-de-vide':
+                document.getElementById('audio-murmure').play();
+                break;
+            // добавишь сюда остальные, когда будут
+        }
+    }
+
+    function renderView() {
+        const hash = window.location.hash.replace('#', '') || 'vzaidkost';
+        const container = document.getElementById('view-container');
+        const data = DATA[hash] || DATA['vzaidkost'];
+
+        document.querySelectorAll('.sidebar-link').forEach(l => {
+            l.classList.toggle('active', l.getAttribute('href') === `#${hash}`);
+        });
+
+        container.classList.remove('opacity-100', 'translate-y-0');
+        container.classList.add('opacity-0', 'translate-y-4');
+
+        setTimeout(() => {
+            container.innerHTML = `<h2 class="text-3xl font-bold mb-12 tracking-tighter uppercase glitch" data-text="${data.title}">${data.title}</h2>${data.content}`;
+            container.classList.remove('opacity-0', 'translate-y-4');
+            container.classList.add('opacity-100', 'translate-y-0');
+
+            // Если уже был клик по странице — меняем музыку
+            if(started) {
+                playAudioForRoot(hash);
+            }
+        }, 300);
+    }
+
+    function updateClock() {
+        document.getElementById('clock').innerText = new Date().toTimeString().split(' ')[0];
+    }
+
+    window.addEventListener('hashchange', renderView);
+
+    let started = false;
+
+    document.body.addEventListener('click', () => {
+        if (!started) {
+            started = true;
+            const hash = window.location.hash.replace('#', '') || 'vzaidkost';
+            playAudioForRoot(hash);
+        }
+    });
+
+    document.getElementById('mute-btn').onclick = () => {
+        const hash = window.location.hash.replace('#','') || 'vzaidkost';
+        const audio = document.getElementById(
+            hash === 'murmure-de-vide' ? 'audio-murmure' : 'audio-' + hash
+        );
+        if(audio) audio.muted = !audio.muted;
+    };
+
+    window.onload = () => {
+        initBoot();
+        setInterval(updateClock, 1000);
+    };
+</script>
+
+<!-- Аудио источники -->
+<audio id="audio-vzaidkost" src="https://rus.hitmotop.com/song/72051472.mp3" preload="none"></audio>
+<audio id="audio-murmure" src="https://mn1.sunproxy.net/file/NFV5UEQ0dVp3OWhralBlL1JDanR6V3oveWFmR1JKM2gzQnVyNkVaMldtNTE0cE80VGwyM2xYb0pZL2RRaGJGRFdGZktJU2NPMmZWVGJqVCtwNUxzaVo3NUtxZ3BSUkN2UFlXVWJGL1hnWmM9/Biosphere_and_Deathprod_-_Trasparenza_(mp3.mn).mp3" preload="none"></audio>
 
 <div id="mute-btn" style="
 position:fixed;top:10px;right:10px;
