@@ -8,26 +8,31 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700&display=swap');
 
+:root {
+    --primary:#d1d1d1;
+    --bg:#050505;
+}
+
 body {
-    background:#050505;
-    color:#d1d1d1;
+    background:var(--bg);
+    color:var(--primary);
     font-family:'JetBrains Mono', monospace;
     overflow:hidden;
     height:100vh;
     margin:0;
 }
 
-/* 👁 глаза */
-.eyes {
+/* 👁 фон */
+.eyes{
     position:fixed;
     inset:0;
     background:url('https://i.ibb.co/0jKzZ8Y/eyes-bg.jpg') center/cover;
-    opacity:0.07;
+    opacity:0.05;
     z-index:-2;
     animation:blink 12s infinite;
 }
-@keyframes blink {
-    0%,92%,100%{opacity:0.07}
+@keyframes blink{
+    0%,92%,100%{opacity:0.05}
     94%{opacity:0.01}
 }
 
@@ -47,20 +52,10 @@ body {
     100%{clip:rect(80px,9999px,90px,0)}
 }
 
-/* scan */
-body::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:linear-gradient(rgba(0,0,0,0)50%,rgba(0,0,0,0.25)50%);
-    background-size:100% 4px;
-    pointer-events:none;
-}
-
 /* whispers */
 .whisper{
     position:fixed;
-    opacity:0.1;
+    opacity:0.08;
     font-size:12px;
     pointer-events:none;
     transition:10s linear;
@@ -69,29 +64,38 @@ body::before{
 </head>
 
 <body class="p-4 md:p-8">
+
 <div class="eyes"></div>
 
 <!-- 🔊 звук -->
 <audio id="bg-music" loop>
 <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7c0c6c7c13.mp3?filename=dark-ambient-113997.mp3">
 </audio>
-<button id="sound-btn" style="position:fixed;top:10px;right:10px;z-index:999">🔇</button>
+<button id="sound-btn" class="fixed top-4 right-4 z-[9999]">🔇</button>
 
-<div class="max-w-7xl mx-auto h-full flex flex-col border border-white/10 bg-black/40">
+<div class="max-w-7xl mx-auto h-full flex flex-col border border-white/10 relative overflow-hidden bg-black/40 backdrop-blur-sm">
 
-<header class="p-4 flex justify-between border-b border-white/10">
-<div id="status">Status: Online</div>
-<div class="glitch" data-text="LAPIN">LAPIN</div>
-<div id="clock"></div>
+<header class="border-b border-white/10 p-4 flex justify-between items-center bg-black/60">
+<div id="status" class="text-xs opacity-50">Status: Online</div>
+<div class="glitch text-sm" data-text="LAPIN SYSTEM">LAPIN SYSTEM</div>
+<div id="clock" class="text-xs opacity-50">00:00:00</div>
 </header>
 
-<div class="flex flex-1">
-<nav class="w-60 border-r border-white/10 p-4">
-<a href="#vzaidkost">vzaidkost</a><br>
-<a href="#secret" id="secret-link" style="display:none">???</a>
+<div class="flex flex-1 overflow-hidden">
+<nav class="w-72 border-r border-white/10 p-6 flex flex-col gap-2 bg-black/40 overflow-y-auto">
+<div class="text-[9px] uppercase opacity-30 mb-4">Directories</div>
+
+<a href="#vzaidkost" class="sidebar-link p-2 text-xs opacity-60">/root/vzaidkost</a>
+<a href="#murmure-de-vide" class="sidebar-link p-2 text-xs opacity-60">/root/murmure-de-vide</a>
+<a href="#ili" class="sidebar-link p-2 text-xs opacity-60">/root/ili</a>
+<a href="#foryouhaaa" class="sidebar-link p-2 text-xs opacity-60">/root/foryouhaaa</a>
+<a href="#limite" class="sidebar-link p-2 text-xs opacity-60">/root/limite</a>
+
+<div class="mt-6 text-[9px] opacity-30">Security</div>
+<a href="#mirror" class="sidebar-link p-2 text-xs text-red-400 opacity-80">/root/mirror_1788</a>
 </nav>
 
-<main class="flex-1 p-8">
+<main class="flex-1 overflow-y-auto p-12">
 <div id="view-container"></div>
 </main>
 </div>
@@ -101,19 +105,43 @@ body::before{
 /* ================= DATA ================= */
 const DATA = {
 vzaidkost:{
-title:"LAPIN",
-content:"<p>архив неслучившегося</p>"
+title:'LAPIN // VZAIDKOST',
+content:`<p>архив неслучившегося</p>`
+},
+'murmure-de-vide':{
+title:'AUUDDVORDU',
+content:`<p>здесь правда в паузе</p>`
+},
+ili:{
+title:'VOZZMEZDRR',
+content:`<p>ты — отражение</p>`
+},
+foryouhaaa:{
+title:'CHOICE',
+content:`<p>выбери путь</p>`
+},
+limite:{
+title:'VARIABLE',
+content:`<p>эксперимент</p>`
+},
+mirror:{
+title:'MIRROR',
+content:`<p>расшифруй сигнал</p>`
+},
+night:{
+title:'NIGHT ARCHIVE',
+content:`<p class="text-red-400">ты не должен быть здесь ночью</p>`
 },
 secret:{
-title:"???",
-content:"<p>ты нашёл это место.</p>"
+title:'???',
+content:`<p>…ты нашёл это.</p>`
 }
 };
 
 /* ================= ПАМЯТЬ ================= */
-let visits = localStorage.getItem('visits') || 0;
+let visits = localStorage.getItem('lapin_visits') || 0;
 visits++;
-localStorage.setItem('visits', visits);
+localStorage.setItem('lapin_visits', visits);
 
 if(visits > 1){
 document.getElementById('status').innerText = "Status: I remember you";
@@ -122,16 +150,31 @@ document.getElementById('status').innerText = "Status: I remember you";
 /* ================= РЕНДЕР ================= */
 function renderView(){
 const hash = location.hash.replace('#','') || 'vzaidkost';
-const data = DATA[hash] || DATA.vzaidkost;
+let data = DATA[hash] || DATA.vzaidkost;
 
+/* 🌙 ночь */
+const h = new Date().getHours();
+if(h>=0 && h<5){
+data = DATA.night;
+}
+
+/* glitch */
 document.body.style.filter="invert(1)";
 setTimeout(()=>document.body.style.filter="none",80);
 
 document.getElementById('view-container').innerHTML =
-`<h1 class="glitch" data-text="${data.title}">${data.title}</h1>${data.content}`;
+`<h2 class="glitch text-xl mb-6" data-text="${data.title}">${data.title}</h2>${data.content}`;
 }
 
 window.addEventListener('hashchange',renderView);
+
+/* ================= ЧАСЫ ================= */
+function updateClock(){
+const now=new Date();
+const fake=new Date(now.getTime()+Math.sin(now.getSeconds())*2000);
+document.getElementById('clock').innerText=fake.toTimeString().split(' ')[0];
+}
+setInterval(updateClock,1000);
 
 /* ================= ЗВУК ================= */
 const audio=document.getElementById('bg-music');
@@ -146,14 +189,6 @@ btn.onclick=()=>{
 if(audio.paused){audio.play();btn.textContent='🔊'}
 else{audio.pause();btn.textContent='🔇'}
 };
-
-/* ================= ЧАСЫ ================= */
-function updateClock(){
-const now=new Date();
-const fake=new Date(now.getTime()+Math.sin(now.getSeconds())*2000);
-document.getElementById('clock').innerText=fake.toTimeString().split(' ')[0];
-}
-setInterval(updateClock,1000);
 
 /* ================= ШЁПОТ ================= */
 function whisper(){
@@ -178,15 +213,15 @@ setInterval(()=>{if(Math.random()>0.6)whisper()},4000);
 /* ================= СЕКРЕТ ================= */
 let clicks=0;
 document.body.addEventListener('click',(e)=>{
-if(e.target.tagName==="A") return;
+if(e.target.closest('a')) return;
 
 clicks++;
 if(clicks>=5){
-document.getElementById('secret-link').style.display='block';
+location.hash="secret";
 }
 });
 
-/* ================= ПСИХ ЭФФЕКТ ================= */
+/* ================= ПСИХ ================= */
 setTimeout(()=>{
 alert("ты всё ещё здесь?..");
 },180000);
@@ -194,5 +229,6 @@ alert("ты всё ещё здесь?..");
 /* ================= START ================= */
 renderView();
 </script>
+
 </body>
 </html>
